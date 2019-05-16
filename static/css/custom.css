@@ -1,0 +1,8 @@
+table.campaigns-list {
+	margin: auto;
+	width: 600px;
+	border-collapse: collapse;
+	border: 1px solid #fff; /*for older IE*/
+	border-style: hidden;
+
+}

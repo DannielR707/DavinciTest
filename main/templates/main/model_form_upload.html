@@ -1,0 +1,155 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+  	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">	
+    <meta charset="utf-8">
+    <style type="text/css">
+     body {
+	background-color: #f6f6ff;
+	font-family: Calibri, Myriad;
+}
+table.clients-info thead, th {
+  border: 1px solid #999;  
+  text-align: center;
+  background-color: #94b9b0
+ 
+}
+table.file-preview thead, th {
+  border: 1px solid #999;  
+  text-align: center;
+  
+ 
+}
+</style>
+    <p style="color:#858786"><title >{{campaign.name}}</title></p>
+  </head>
+  <body>
+  	&nbsp
+  <div style="margin-left:350px;"color:#858c8a""><h1><p><a href="{% url 'detailCampaign' campaign.id %}">{{campaign.name}}</p></h1></a>
+   &nbsp
+   
+  <p> Seleccione un archivo:</p>
+ <form method="post" action="{% url 'checkFileColumns' campaign.id  %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p><input type="file" name="csv_file" required="True"></p>
+    <p><input type="submit" value="Subir"></p>
+  </form>
+   &nbsp
+ 
+   {% if rows %}
+   
+  <p>Por favor seleccione y asocie las columnas correspondientes y de click en el botón "Enviar":</p>
+	&nbsp
+	<form method="post" id="uploadInfo" action="{% url 'model_form_upload' campaign.id  %}" enctype="multipart/form-data">
+    {% csrf_token %}
+   <table id = "filePreview" class="file-preview" style="width:50%">
+		<tbody>
+   		{% for row in rows %}
+	   		
+   		<tr>{% for column in row %}   				
+   			<td>
+   				{% if forloop.parentloop.counter0 == 0%}
+	   			<select style="width:150px" title="Seleccione..." data-live-search="true"id="table_columns{{forloop.counter0}}" name="table_columns{{forloop.counter0}}" >
+	   						 <option value="0">Seleccione...</option>
+							{% for table_column in table_columns %}		  	
+								<option name="TC_id" value="{{ table_column.id }}" >{{ table_column.name }}</option>							
+							{% endfor %}	
+						</select>
+	   			<p></p>
+	   			{% endif%}
+
+   				{{ column}}
+   			</td>
+   			{% endfor %}
+   		</tr> 
+   		{% endfor %}
+   		<tbody>
+   	</table>
+   	<input type="text" name="file_length" id="file_length" value="{{file_length}} "hidden="True"/>	
+   	<input type="text" name="total_columns" id="total_columns" value="{{total_columns}} "hidden="True"/>	
+   	<input type="text" name="document_id" id="document_id" value="{{document_id}} "hidden="True"/>	
+   	<p><h5><b>Previsualización del archivo, se muestran 5 de {{file_length}} filas.</b></h5></p>
+   	<p><input for="uploadInfo" type="submit" value="Enviar"></p>
+   	</form> 
+
+   	{% endif%}
+   	&nbsp
+   
+   	<p><h2>Información Clientes:</h2></p>
+   &nbsp
+   </div>
+   {% if clientsInfo%}
+<div style="margin-left:1030px;">
+<a href="{% url 'deleteAllInfo' campaign.id %}"><button type="button" >
+							Borrar Todo</button></a>
+	</div>
+	{% endif %}
+<div style="margin-left:100px;">
+  <table id = "clientsInfo" class="clients-info" style="width:60%">
+			<thead>
+				<tr>
+					<td><b>Nombres</b></td>
+					<td><b>Apellidos</b></td>
+					<td><b>Teléfono</b></td>
+					<td><b>Dirección</b></td>
+					<td></td>
+				</tr>
+			</thead>
+			<tbody>
+			{% for obj in clientsInfo %}	
+			<tr>				
+				<td>{{ obj.name }}</td>	
+				<td>{{ obj.lastName }}</td>	
+				<td>{{ obj.phoneNumber }}</td>	
+				<td>{{ obj.address }}</td>
+				<td><a href="{% url 'deleteInfo' obj.id %}"><button type="button" >
+							Borrar</button></a></td>											
+			</tr>
+			{% endfor %}
+			</tbody> 
+		</table>	    
+ &nbsp
+  &nbsp
+  </div>
+  <div style="margin-left:1030px;">
+  	<p><a href="{% url 'home' %}"><button type="button">Volver</a></button></p>
+  </div>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script >
+$(document).ready(function() {
+		    $('#clientsInfo').DataTable( {
+		       language: {
+        		"decimal": "",
+        		"emptyTable": "No hay información",
+		        "info": "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
+		        "infoEmpty": "Mostrando 0 to 0 of 0 Entradas",
+		        "infoFiltered": "(Filtrado de _MAX_ total entradas)",
+		        "infoPostFix": "",
+		        "thousands": ",",
+		        
+		        "lengthMenu": "Mostrar _MENU_ ",
+		        "loadingRecords": "Cargando...",
+		        "processing": "Procesando...",
+		        "search": "Palabra Clave:",
+		        "zeroRecords": "Sin resultados encontrados",
+		        
+		        "paginate": {
+		            "first": " Inicio ",
+            		"last": " Fin ",
+		            "next": " >> ",
+		            "previous": " << "
+		        }
+
+    		},
+    		"pagingType": "full_numbers",
+		        "order": [[ 4, "asc" ]]
+		    } );
+		} );
+
+</script>		
+<script >
+
+</script>		
+</html>
